@@ -18,6 +18,7 @@ import ChatbotScreen from './components/ChatbotScreen';
 import SettingsScreen from './components/SettingsScreen';
 import OfficialDashboard from './components/OfficialDashboard';
 import AdminDashboard from './components/AdminDashboard';
+import ResetPasswordScreen from './components/ResetPasswordScreen';
 
 // --- FIREBASE INITIALIZATION ---
 // Firebase is already initialized in firebaseConfig.ts
@@ -145,6 +146,16 @@ export default function App() {
   };
 
   // --- 4. RENDER LOGIC ---
+
+  // Check if this is a password reset URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const mode = urlParams.get('mode');
+  const oobCode = urlParams.get('oobCode');
+
+  // Show reset password screen if URL contains reset parameters
+  if (mode === 'resetPassword' && oobCode) {
+    return <ResetPasswordScreen />;
+  }
 
   // Show loading while Firebase state is resolving (brief moment)
   if (firebaseUser === undefined) {

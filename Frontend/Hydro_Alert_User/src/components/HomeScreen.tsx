@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { AlertTriangle, Droplets, CloudRain, Navigation, Phone, Camera, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { AlertTriangle, Droplets, CloudRain, Navigation, Phone, Camera, AlertCircle, MapPin } from 'lucide-react';
 import { Button } from './ui/button';
 import { Card, CardContent } from './ui/card';
 import { Alert, AlertDescription } from './ui/alert';
@@ -7,6 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Textarea } from './ui/textarea';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Label } from './ui/label';
+import { auth } from '../firebaseConfig';
 
 type Language = 'en' | 'fil';
 type FloodStatus = 'safe' | 'monitoring' | 'warning' | 'danger';
@@ -27,6 +28,113 @@ export default function HomeScreen({ language, userLocation, onNavigateToMap }: 
   const [rescueDialogOpen, setRescueDialogOpen] = useState(false);
   const [reportCondition, setReportCondition] = useState('');
   const [reportDetails, setReportDetails] = useState('');
+  
+  // Dynamic location state
+  const [currentLocation, setCurrentLocation] = useState({
+    location: "Barangay 728, Zone 79, Manila",
+    monitoringArea: "Barangay 728 Flood Monitoring Zone",
+    lastUpdated: new Date().toISOString()
+  });
+  const [locationLoading, setLocationLoading] = useState(false);
+
+  // Fetch user location data with multi-layered fallback strategy
+  useEffect(() => {
+    const fetchUserLocation = async () => {
+      setLocationLoading(true);
+      
+      try {
+        // 1. PRIMARY ATTEMPT: Cloud Function API call
+        const user = auth.currentUser;
+        if (!user) {
+          throw new Error('No authenticated user');
+        }
+
+        const token = await user.getIdToken();
+        const response = await fetch('https://us-central1-hydroalert-user.cloudfunctions.net/getUserLocation', {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          if (data.success) {
+            setCurrentLocation({
+              location: data.data.location,
+              monitoringArea: data.data.monitoringArea,
+              lastUpdated: data.data.lastUpdated
+            });
+            setLocationLoading(false);
+            return; // Success - exit early
+          }
+        }
+        
+        // If we reach here, the API call failed
+        throw new Error(`API call failed with status: ${response.status}`);
+        
+      } catch (error) {
+        console.error('Primary location fetch failed:', error);
+        
+        try {
+          // 2. FIRST FALLBACK: Native browser Geolocation API
+          console.log('Attempting geolocation fallback...');
+          
+          const getCurrentPosition = (): Promise<GeolocationPosition> => {
+            return new Promise((resolve, reject) => {
+              if (!navigator.geolocation) {
+                reject(new Error('Geolocation is not supported by this browser'));
+                return;
+              }
+              
+              navigator.geolocation.getCurrentPosition(
+                (position) => resolve(position),
+                (error) => reject(error),
+                {
+                  enableHighAccuracy: true,
+                  timeout: 10000,
+                  maximumAge: 300000 // 5 minutes
+                }
+              );
+            });
+          };
+
+          const position = await getCurrentPosition();
+          const { latitude, longitude } = position.coords;
+          
+          // Update location with GPS coordinates
+          setCurrentLocation({
+            location: `GPS Location: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+            monitoringArea: "Location from Device GPS",
+            lastUpdated: new Date().toISOString()
+          });
+          
+          console.log('Geolocation fallback successful');
+          setLocationLoading(false);
+          return; // Success - exit early
+          
+        } catch (geolocationError) {
+          console.error('Geolocation fallback failed:', geolocationError);
+          
+          // 3. SECOND FALLBACK: Hardcoded default coordinates
+          console.log('Using default location fallback...');
+          
+          setCurrentLocation({
+            location: "Barangay 728, Zone 79, Manila (Default)",
+            monitoringArea: "Default Monitoring Zone - Manila",
+            lastUpdated: new Date().toISOString()
+          });
+          
+          console.log('Default location fallback applied');
+        }
+      } finally {
+        setLocationLoading(false);
+      }
+    };
+
+    fetchUserLocation();
+  }, []);
 
   const content = {
     en: {
@@ -204,9 +312,21 @@ export default function HomeScreen({ language, userLocation, onNavigateToMap }: 
       <div className="bg-blue-600 text-white px-4 py-6 pb-8">
         <h1 className="mb-1">{t.title}</h1>
         <p className="text-blue-100 text-sm flex items-center gap-1">
-          <Navigation className="w-4 h-4" />
-          {t.location}
+          <MapPin className="w-4 h-4" />
+          {locationLoading ? (
+            <span className="flex items-center gap-1">
+              <div className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />
+              Loading location...
+            </span>
+          ) : (
+            currentLocation.location
+          )}
         </p>
+        {!locationLoading && (
+          <p className="text-blue-200 text-xs mt-1">
+            Monitoring: {currentLocation.monitoringArea}
+          </p>
+        )}
       </div>
 
       {/* Main Content */}

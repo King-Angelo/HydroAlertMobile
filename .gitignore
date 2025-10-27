@@ -1,116 +1,9 @@
-# Ignore everything by default
-/*
-
-# But track these specific project directories
-!OneDrive/Documents/HydroAlert/
-!OneDrive/Documents/Capstone/
-
-# Ignore system and user files
-.VirtualBox/
-.anaconda/
-.android/
-.bash_history
-.cache/
-.chocolatey/
-.conda/
-.condarc
-.config/
-.continuum/
-.cursor/
-.docker/
-.eclipse/
-.emulator_console_auth_token
-.gitconfig
-.gitignore
-.gnupg/
-.gradle/
-.ipynb_checkpoints/
-.ipython/
-.jupyter/
-.lesshst
-.matplotlib/
-.nbi/
-.node_repl_history
-.p2/
-.packettracer
-.python_history
-.rustup/
-.skiko/
-.vscode/
-.zenmap/
-AndroidStudioProjects/
-AppData/
-"Cisco Packet Tracer 8.2.2/"
-Contacts/
-CrossDevice/
-Downloads/
-Favorites/
-Links/
-Music/
-NTUSER.DAT*
-Pictures/
-"Saved Games/"
-Searches/
-Videos/
-"VirtualBox VMs/"
-ZAP/
-anaconda3/
-anaconda_projects/
-cert.pem
-composer.json
-composer.lock
-composer.phar
-eclipse/
-express-joblink/
-history.log
-microservice_deployed/
-microservices-integration/
-mka-laravel-app/
-my-laravel-app/
-my-simple-registration/
-npm-cache/
-ntuser.dat.LOG*
-ntuser.ini
-package-lock.json
-package.json
-react_project/
-simpletask/
-vendor/
-wekafiles/
-Untitled.ipynb
-
-# Ignore other Documents subdirectories except HydroAlert and Capstone
-OneDrive/Documents/CBS/
-OneDrive/Documents/EXPRESSFRAMEWORK/
-OneDrive/Documents/GitHub/
-"OneDrive/Documents/HydroAlert App Wireframe.zip"
-OneDrive/Documents/MYEXPRESSAPP/
-OneDrive/Documents/NPM/
-"OneDrive/Documents/OneNote Notebooks/"
-OneDrive/Documents/PowerShell/
-"OneDrive/Documents/Sound Recordings/"
-OneDrive/Documents/TXTs/
-"OneDrive/Documents/Virtual Machines/"
-OneDrive/Documents/desktop.ini
-OneDrive/Documents/hmac_example.py
-OneDrive/Documents/king_anaconda/
-OneDrive/Documents/node-crud.zip
-OneDrive/Documents/node-crud/
-OneDrive/Documents/superheroes/
-
-# Ignore other OneDrive files
-"OneDrive/Getting started with OneDrive.pdf"
-"OneDrive/Personal Vault.lnk"
-OneDrive/Pictures/
-OneDrive/Desktop/
-OneDrive/desktop.ini
-OneDrive/.849C9593-D756-4E56-8D6E-42412F2A707B
-
 # Node.js
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+package-lock.json
 
 # Environment variables
 .env
@@ -125,18 +18,28 @@ dist/
 *.tgz
 *.tar.gz
 
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+*.local
+
 # IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS generated files
 .DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-desktop.ini
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs
+logs/
+*.log
+
+# Testing
+coverage/
+
+# Misc
+.cache/

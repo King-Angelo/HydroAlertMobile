@@ -48,7 +48,8 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [demoRole, setDemoRole] = useState<UserRole>('resident');
+  // Commented out - uncomment if you need demo mode
+  // const [demoRole, setDemoRole] = useState<UserRole>('resident');
 
   const content = {
     en: {
@@ -155,7 +156,12 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
 
   const t = content[language];
 
-  // Mock user database
+  // Mock user database - Commented out (not used in production)
+  // Demo credentials still work on backend: 
+  // resident@barangay728.ph / resident123
+  // official@barangay728.ph / official123
+  // admin@barangay728.ph / admin123
+  /*
   const mockUsers = {
     resident: {
       id: 'res001',
@@ -185,6 +191,7 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
       barangay: 'Barangay 728, Zone 79'
     }
   };
+  */
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -415,11 +422,12 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
     }
   };
 
-  const handleDemoSignIn = () => {
-    const demoUser = mockUsers[demoRole];
-    const { password: _, ...userSession } = demoUser;
-    onSignIn(userSession);
-  };
+  // Commented out - uncomment if you need demo mode
+  // const handleDemoSignIn = () => {
+  //   const demoUser = mockUsers[demoRole];
+  //   const { password: _, ...userSession } = demoUser;
+  //   onSignIn(userSession);
+  // };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-600 to-blue-800 flex items-center justify-center p-4">

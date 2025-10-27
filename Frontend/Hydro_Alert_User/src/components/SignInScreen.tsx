@@ -747,7 +747,9 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
           </CardContent>
         </Card>
 
-        {/* Demo Mode Card */}
+        {/* Demo Mode Card - Hidden in production */}
+        {/* Uncomment below to show demo mode for testing */}
+        {/* 
         <Card className="border-2 border-blue-200 bg-blue-50">
           <CardHeader>
             <CardTitle className="text-blue-900">{t.demoMode}</CardTitle>
@@ -782,7 +784,6 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
           </CardContent>
         </Card>
 
-        {/* Demo Credentials Info */}
         <Card className="bg-white/10 border-white/20 text-white">
           <CardContent className="pt-6">
             <p className="text-xs mb-2">
@@ -795,6 +796,7 @@ export default function SignInScreen({ language, onSignIn }: SignInScreenProps) 
             </div>
           </CardContent>
         </Card>
+        */}
       </div>
     </div>
   );
